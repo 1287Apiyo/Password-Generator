@@ -1,9 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 //render the gui components(frontend)
 //this class will inherit from the JFrame class
 public class PasswordGeneratorGUI extends JFrame {
+    private PasswordGenerator passwordGenerator;
     public PasswordGeneratorGUI(){
         //render frame and a title
         super("Password Generator");
@@ -13,6 +16,8 @@ public class PasswordGeneratorGUI extends JFrame {
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        //initialize password generator
+        passwordGenerator=new PasswordGenerator();
 
         //add gui components
        addGuiComponents();
@@ -77,6 +82,28 @@ public class PasswordGeneratorGUI extends JFrame {
         JButton generateButton =new JButton("Gernerate");
         generateButton.setFont(new Font("Dialog",Font.PLAIN,32));
         generateButton.setBounds(155,477,222,41);
+        generateButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+             //validation:generate a password only when length >0 and one of the toggled buttons is pressed
+                if (passwordLengthInputArea.getText().length() <= 0 )return;
+                boolean anyToggleSelected =lowercaseToggle.isSelected()||
+                        uppercaseToggle.isSelected()||
+                        numbersToggle.isSelected()||
+                        symbolsToggle.isSelected();
+                //generate password
+                int passwordLength=Integer.parseInt(passwordLengthInputArea.getText());
+                if (anyToggleSelected){
+                    String generatePassword =passwordGenerator.generatePassword(passwordLength,uppercaseToggle.isSelected(),
+                            lowercaseToggle.isSelected(),
+                            numbersToggle.isSelected(),
+                            symbolsToggle.isSelected()
+                            );
+                    //display the password
+                    passwordOutput.setText(generatePassword);
+                }
+            }
+        });
         add(generateButton);
     }
 
